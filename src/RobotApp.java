@@ -1,3 +1,4 @@
+import java.util.List;
 
 public class RobotApp {
 
@@ -5,7 +6,7 @@ public class RobotApp {
 		
 	}
 	
-	private Grid generateGrid()
+	private Grid generateGrid(List<GridPosition> dirtPostions, List<GridPosition> obsticalPostion, Robot robot)
 	{
 		return null;
 	}
