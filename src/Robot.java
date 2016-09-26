@@ -7,5 +7,17 @@ public class Robot {
 		this.currentPostion = currentPostion;
 		this.currentDirection = currentDirection;
 	}
+	public GridPosition getCurrentPostion() {
+		return currentPostion;
+	}
+	public void setCurrentPostion(GridPosition currentPostion) {
+		this.currentPostion = currentPostion;
+	}
+	public String getCurrentDirection() {
+		return currentDirection;
+	}
+	public void setCurrentDirection(String currentDirection) {
+		this.currentDirection = currentDirection;
+	}
 	
 }

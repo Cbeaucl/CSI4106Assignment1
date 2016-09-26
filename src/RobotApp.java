@@ -1,17 +1,41 @@
+import java.util.LinkedList;
 import java.util.List;
 
 public class RobotApp {
 
 	public static void main(String[] args) {
-		
+		GridPosition dirt1 = new GridPosition(1, 0);
+		GridPosition dirt2 = new GridPosition(0, 1);
+		GridPosition dirt3 = new GridPosition(2, 2);
+		GridPosition dirt4 = new GridPosition(1, 3);
+		List<GridPosition> dirts = new LinkedList<GridPosition>();
+		dirts.add(dirt1);
+		dirts.add(dirt2);
+		dirts.add(dirt3);
+		dirts.add(dirt4);
+
+		List<GridPosition> obstacles = new LinkedList<GridPosition>();
+
+		GridPosition obst1 = new GridPosition(1, 1);
+		GridPosition obst2 = new GridPosition(1, 2);
+		GridPosition obst3 = new GridPosition(2, 1);
+		obstacles.add(obst1);
+		obstacles.add(obst2);
+		obstacles.add(obst3);
+		Robot theRobot = new Robot(new GridPosition(3, 2), "w");
+		// obstacles
+		Grid grid = generateGrid(dirts, obstacles, theRobot, 4);
+		grid.printGrid();
+
 	}
-	
-	private Grid generateGrid(List<GridPosition> dirtPostions, List<GridPosition> obsticalPostion, Robot robot)
-	{
-		return null;
+
+	private static Grid generateGrid(List<GridPosition> dirtPostions, List<GridPosition> obstaclePostion, Robot robot,
+			int gridSize) {
+		return new Grid(dirtPostions, obstaclePostion, robot, gridSize);
+
 	}
-	private Solution search(Grid grid, int searchType)
-	{
+
+	private Solution search(Grid grid, int searchType) {
 		switch (searchType) {
 		case 1:
 			RobotSearchAlgs.doDepthFirst(grid);
@@ -20,15 +44,15 @@ public class RobotApp {
 			RobotSearchAlgs.doBreadthFirst(grid);
 			break;
 		case 3:
-			RobotSearchAlgs.doAStar(grid); 
+			RobotSearchAlgs.doAStar(grid);
 		default:
 			break;
 		}
 		return null;
 	}
-	private void printSolution(Solution solution)
-	{
-		
+
+	private void printSolution(Solution solution) {
+
 	}
 
 }
