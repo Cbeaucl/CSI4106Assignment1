@@ -20,13 +20,118 @@ public class Grid {
 		}
 
 		for (GridPosition position : dirtPostions) {
-			map[position.getX()][position.getY()].setHasDirt(true);
+			map[position.getY()][position.getX()].setHasDirt(true);
 		}
 		for (GridPosition position : obsticalPostion) {
-			map[position.getX()][position.getY()].setHasObstacle(true);
+			map[position.getY()][position.getX()].setHasObstacle(true);
 		}
 		GridPosition roboPosition = robot.getCurrentPostion();
-		map[roboPosition.getX()][roboPosition.getY()].setHasRobot(true);
+		map[roboPosition.getY()][roboPosition.getX()].setHasRobot(true);
+	}
+
+	public boolean moveForward() {
+		GridPosition position = robot.getCurrentPostion();
+		boolean moved = false;
+		switch (robot.getCurrentDirection()) {
+		case "w":
+
+			if (position.getY() - 1 >= 0) {
+				if (!map[position.getY()][position.getX() - 1].isHasObstacle()) {
+					map[position.getY()][position.getX() - 1].setHasRobot(true);
+					map[position.getY()][position.getX()].setHasRobot(false);
+					robot.setCurrentPostion(new GridPosition(position.getX() - 1, position.getY()));
+					moved = true;
+				}
+			}
+			break;
+		case "e":
+			if (position.getX() + 1 < gridSize) {
+				if (!map[position.getY()][position.getX() + 1].isHasObstacle()) {
+					map[position.getY()][position.getX() + 1].setHasRobot(true);
+					map[position.getY()][position.getX()].setHasRobot(false);
+					robot.setCurrentPostion(new GridPosition(position.getX() + 1, position.getY()));
+					moved = true;
+				}
+			}
+			break;
+		case "n":
+			if (position.getY() - 1 >= 0) {
+				if (!map[position.getY() - 1][position.getX()].isHasObstacle()) {
+					map[position.getY() - 1][position.getX()].setHasRobot(true);
+					map[position.getY()][position.getX()].setHasRobot(false);
+					robot.setCurrentPostion(new GridPosition(position.getX(), position.getY() - 1));
+					moved = true;
+				}
+			}
+			break;
+		case "s":
+			if (position.getY() + 1 < gridSize) {
+				if (!map[position.getY() + 1][position.getX()].isHasObstacle()) {
+					map[position.getY() + 1][position.getX()].setHasRobot(true);
+					map[position.getY()][position.getX()].setHasRobot(false);
+					robot.setCurrentPostion(new GridPosition(position.getX(), position.getY() + 1));
+					moved = true;
+				}
+			}
+			break;
+
+		default:
+			break;
+		}
+		if (moved) {
+			robot.useEnergy(50);
+		}
+		return moved;
+	}
+
+	public void turnRight() {
+		switch (robot.getCurrentDirection()) {
+		case "w":
+			robot.setCurrentDirection("n");
+			break;
+		case "e":
+			robot.setCurrentDirection("s");
+			break;
+		case "n":
+			robot.setCurrentDirection("e");
+			break;
+		case "s":
+			robot.setCurrentDirection("w");
+			break;
+
+		default:
+			break;
+		}
+		robot.useEnergy(20);
+	}
+
+	public void turnLeft() {
+		switch (robot.getCurrentDirection()) {
+		case "w":
+			robot.setCurrentDirection("s");
+			break;
+		case "e":
+			robot.setCurrentDirection("n");
+			break;
+		case "n":
+			robot.setCurrentDirection("w");
+			break;
+		case "s":
+			robot.setCurrentDirection("e");
+			break;
+
+		default:
+			break;
+		}
+		robot.useEnergy(20);
+	}
+
+	public void suck() {
+		GridPosition currentPosition = robot.getCurrentPostion();
+		if (map[currentPosition.getY()][currentPosition.getX()].isHasDirt()) {
+			map[currentPosition.getY()][currentPosition.getX()].setHasDirt(false);
+		}
+		robot.useEnergy(10);
 	}
 
 	public void printGrid() {
