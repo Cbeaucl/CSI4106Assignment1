@@ -1,7 +1,8 @@
+import java.util.LinkedList;
 import java.util.List;
 
 public class Grid {
-	private GridNode[][] map;
+	GridNode[][] map;
 	int gridSize;
 	List<GridPosition> dirtPostions;
 	List<GridPosition> obsticalPostion;
@@ -35,7 +36,7 @@ public class Grid {
 		switch (robot.getCurrentDirection()) {
 		case "w":
 
-			if (position.getY() - 1 >= 0) {
+			if (position.getX() - 1 >= 0) {
 				if (!map[position.getY()][position.getX() - 1].isHasObstacle()) {
 					map[position.getY()][position.getX() - 1].setHasRobot(true);
 					map[position.getY()][position.getX()].setHasRobot(false);
@@ -124,6 +125,33 @@ public class Grid {
 			break;
 		}
 		robot.useEnergy(20);
+	}
+
+	public List<GridNode> getNeighbors(GridPosition position) {
+		List<GridNode> neighbors = new LinkedList<GridNode>();
+		if (position.getX() - 1 >= 0) {
+
+			if (!map[position.getY()][position.getX() - 1].isHasObstacle()) {
+				neighbors.add(map[position.getY()][position.getX() - 1]);
+			}
+		}
+		if (position.getX() + 1 < gridSize) {
+			if (!map[position.getY()][position.getX() + 1].isHasObstacle()) {
+
+				neighbors.add(map[position.getY()][position.getX() + 1]);
+			}
+		}
+		if (position.getY() - 1 >= 0) {
+			if (!map[position.getY() - 1][position.getX()].isHasObstacle()) {
+				neighbors.add(map[position.getY() - 1][position.getX()]);
+			}
+		}
+		if (position.getY() + 1 < gridSize) {
+			if (!map[position.getY() + 1][position.getX()].isHasObstacle()) {
+				neighbors.add(map[position.getY() + 1][position.getX()]);
+			}
+		}
+		return neighbors;
 	}
 
 	public void suck() {
