@@ -1,11 +1,13 @@
 
 public class GridNode {
 	private boolean hasObstacle, hasDirt, hasRobot;
+	private GridPosition position;
 
-	public GridNode(boolean hasObstacle, boolean hasDirt, boolean hasRobot) {
+	public GridNode(boolean hasObstacle, boolean hasDirt, boolean hasRobot, GridPosition position) {
 		this.hasObstacle = hasObstacle;
 		this.hasDirt = hasDirt;
 		this.hasRobot = hasRobot;
+		this.position = position;
 	}
 
 	public boolean isHasObstacle() {
@@ -30,5 +32,13 @@ public class GridNode {
 
 	public void setHasRobot(boolean hasRobot) {
 		this.hasRobot = hasRobot;
+	}
+
+	public GridPosition getPosition() {
+		return position;
+	}
+
+	public void setPosition(GridPosition position) {
+		this.position = position;
 	}
 }
