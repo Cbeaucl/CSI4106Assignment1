@@ -16,8 +16,10 @@ public class Grid {
 		this.robot = robot;
 
 		for (int i = 0; i < gridSize; i++) {
-			for (int j = 0; j < gridSize; j++)
-				map[i][j] = new GridNode(false, false, false);
+			for (int j = 0; j < gridSize; j++) {
+				GridPosition position = new GridPosition(j, i);
+				map[i][j] = new GridNode(false, false, false, position);
+			}
 		}
 
 		for (GridPosition position : dirtPostions) {
