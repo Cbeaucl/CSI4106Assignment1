@@ -12,6 +12,17 @@ public class GridPosition {
 	}
 
 	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[x=");
+		builder.append(x);
+		builder.append(", y=");
+		builder.append(y);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

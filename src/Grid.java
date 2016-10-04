@@ -62,7 +62,7 @@ public class Grid {
 		for (GridPosition position : dirtPostions) {
 			newdirtList.add(position);
 		}
-		Robot newRobot = new Robot(robot.getCurrentPostion(), this.robot.getCurrentDirection());
+		Robot newRobot = new Robot(robot.getCurrentPostion(), this.robot.getCurrentDirection(), robot.getSpentEnergy());
 		return new Grid(newdirtList, obsticalPostion, newRobot, gridSize);
 	}
 

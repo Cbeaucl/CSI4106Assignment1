@@ -26,12 +26,11 @@ public class RobotSearchAlgs {
 		}
 		if (grid.isClean()) {
 			solution.printSolution();
+			System.out.println("Robot spent: " + grid.robot.getSpentEnergy());
+			System.out.println("Total Moves: " + solution.getSolutionSteps().size());
 			theSolution = solution;
 
 		} else if (!visited.containsAll(neighbors) && theSolution == null) {
-			// ArrayList<GridNode> newVisited = new
-			// ArrayList<GridNode>(visited.size());
-			// Collections.copy(newVisited, visited);
 			if (!visited.contains(grid.checkForward()) && grid.moveForward()) {
 
 				theSolution = doDepthFirst(grid.copy(), solution.addStep(grid.robot.getCurrentDirection(),

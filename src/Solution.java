@@ -13,6 +13,10 @@ public class Solution {
 		return this;
 	}
 
+	public List<RobotStep> getSolutionSteps() {
+		return solutionSteps;
+	}
+
 	public void printSolution() {
 		for (RobotStep step : solutionSteps) {
 			System.out.println(step.toString());

@@ -22,7 +22,7 @@ public class RobotApp {
 		obstacles.add(obst1);
 		obstacles.add(obst2);
 		obstacles.add(obst3);
-		Robot theRobot = new Robot(new GridPosition(3, 2), "e");
+		Robot theRobot = new Robot(new GridPosition(3, 2), "w", 0);
 		// obstacles
 		Grid grid = generateGrid(dirts, obstacles, theRobot, 4);
 		grid.printGrid();
