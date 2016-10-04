@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,6 +31,39 @@ public class Grid {
 		}
 		GridPosition roboPosition = robot.getCurrentPostion();
 		map[roboPosition.getY()][roboPosition.getX()].setHasRobot(true);
+	}
+
+	public void moveRobotTo(GridPosition position) {
+		GridPosition oldPosition = robot.getCurrentPostion();
+		robot.setCurrentPostion(position);
+		map[oldPosition.getY()][oldPosition.getX()].setHasRobot(false);
+		map[position.getY()][position.getX()].setHasRobot(true);
+	}
+
+	public boolean isClean() {
+		boolean clean = true;
+		for (int i = 0; i < gridSize; i++) {
+			for (int j = 0; j < gridSize; j++) {
+				if (map[i][j].isHasDirt()) {
+					clean = false;
+					break;
+				}
+			}
+		}
+		return clean;
+	}
+
+	public GridNode getNodeFromPostion(GridPosition postion) {
+		return map[postion.getY()][postion.getX()];
+	}
+
+	public Grid copy() {
+		List<GridPosition> newdirtList = new ArrayList<GridPosition>(dirtPostions.size());
+		for (GridPosition position : dirtPostions) {
+			newdirtList.add(position);
+		}
+		Robot newRobot = new Robot(robot.getCurrentPostion(), this.robot.getCurrentDirection());
+		return new Grid(newdirtList, obsticalPostion, newRobot, gridSize);
 	}
 
 	public boolean moveForward() {
@@ -87,28 +121,69 @@ public class Grid {
 		return moved;
 	}
 
-	public void turnRight() {
+	public GridNode checkForward() {
+		GridPosition position = robot.getCurrentPostion();
+		boolean moved = false;
 		switch (robot.getCurrentDirection()) {
 		case "w":
-			robot.setCurrentDirection("n");
+
+			if (position.getX() - 1 >= 0) {
+				if (!map[position.getY()][position.getX() - 1].isHasObstacle()) {
+					return map[position.getY()][position.getX() - 1];
+				}
+			}
 			break;
 		case "e":
-			robot.setCurrentDirection("s");
+			if (position.getX() + 1 < gridSize) {
+				if (!map[position.getY()][position.getX() + 1].isHasObstacle()) {
+					return map[position.getY()][position.getX() + 1];
+				}
+			}
 			break;
 		case "n":
-			robot.setCurrentDirection("e");
+			if (position.getY() - 1 >= 0) {
+				if (!map[position.getY() - 1][position.getX()].isHasObstacle()) {
+					return map[position.getY() - 1][position.getX()];
+				}
+			}
 			break;
 		case "s":
-			robot.setCurrentDirection("w");
+			if (position.getY() + 1 < gridSize) {
+				if (!map[position.getY() + 1][position.getX()].isHasObstacle()) {
+					return map[position.getY() + 1][position.getX()];
+				}
+			}
 			break;
 
 		default:
 			break;
 		}
-		robot.useEnergy(20);
+		return null;
 	}
 
-	public void turnLeft() {
+	public Grid turnRight() {
+		switch (robot.getCurrentDirection()) {
+		case "w":
+			robot.setCurrentDirection("n");
+			break;
+		case "e":
+			robot.setCurrentDirection("s");
+			break;
+		case "n":
+			robot.setCurrentDirection("e");
+			break;
+		case "s":
+			robot.setCurrentDirection("w");
+			break;
+
+		default:
+			break;
+		}
+		robot.useEnergy(20);
+		return this;
+	}
+
+	public Grid turnLeft() {
 		switch (robot.getCurrentDirection()) {
 		case "w":
 			robot.setCurrentDirection("s");
@@ -127,6 +202,7 @@ public class Grid {
 			break;
 		}
 		robot.useEnergy(20);
+		return this;
 	}
 
 	public List<GridNode> getNeighbors(GridPosition position) {
@@ -158,6 +234,7 @@ public class Grid {
 
 	public void suck() {
 		GridPosition currentPosition = robot.getCurrentPostion();
+		dirtPostions.remove(currentPosition);
 		if (map[currentPosition.getY()][currentPosition.getX()].isHasDirt()) {
 			map[currentPosition.getY()][currentPosition.getX()].setHasDirt(false);
 		}
@@ -199,5 +276,6 @@ public class Grid {
 			}
 			System.out.println("");
 		}
+		System.out.println("\n");
 	}
 }

@@ -8,8 +8,9 @@ public class Solution {
 		solutionSteps = new LinkedList<RobotStep>();
 	}
 
-	public void addStep(String robotDirection, GridPosition robotPosition, String action) {
+	public Solution addStep(String robotDirection, GridPosition robotPosition, String action) {
 		solutionSteps.add(new RobotStep(action, robotDirection, robotPosition));
+		return this;
 	}
 
 	public void printSolution() {
