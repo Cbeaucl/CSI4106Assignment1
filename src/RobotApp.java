@@ -34,14 +34,14 @@ public class RobotApp {
 
 	private static Grid generateGrid(List<GridPosition> dirtPostions, List<GridPosition> obstaclePostion, Robot robot,
 			int gridSize) {
-		return new Grid(dirtPostions, obstaclePostion, robot, gridSize);
+		return new Grid(dirtPostions, obstaclePostion, robot, gridSize, new Solution(), new ArrayList<GridNode>());
 
 	}
 
 	private static Solution search(Grid grid, int searchType) {
 		switch (searchType) {
 		case 1:
-			RobotSearchAlgs.doDepthFirst(grid, new Solution(), new ArrayList<GridNode>());
+			RobotSearchAlgs.doDepthFirst(grid);
 			break;
 		case 2:
 			RobotSearchAlgs.doBreadthFirst(grid);

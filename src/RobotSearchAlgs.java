@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,43 +7,37 @@ public class RobotSearchAlgs {
 	public static void doBreadthFirst(Grid grid) {
 	}
 
-	public static Solution doDepthFirst(Grid grid, Solution solution, List<GridNode> visited) {
+	public static Solution doDepthFirst(Grid grid) {
 		grid.printGrid();
 		GridPosition position = grid.robot.getCurrentPostion();
 		GridNode node = grid.getNodeFromPostion(position);
-		visited.add(node);
+		grid.getVisited().add(node);
 		Solution theSolution = null;
-		List<GridNode> newVisited = new ArrayList<GridNode>();
-		for (GridNode newCopy : visited) {
-			newVisited.add(newCopy);
-		}
 
 		List<GridNode> neighbors = grid.getNeighbors(position);
 		if (node.isHasDirt()) {
 			grid.suck();
-			solution.addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Sucked");
+			grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Sucked");
 		}
 		if (grid.isClean()) {
-			solution.printSolution();
+			grid.getSolution().printSolution();
 			System.out.println("Robot spent: " + grid.robot.getSpentEnergy());
-			System.out.println("Total Moves: " + solution.getSolutionSteps().size());
-			theSolution = solution;
+			System.out.println("Total Moves: " + grid.getSolution().getSolutionSteps().size());
+			theSolution = grid.getSolution();
 
-		} else if (!visited.containsAll(neighbors) && theSolution == null) {
-			if (!visited.contains(grid.checkForward()) && grid.moveForward()) {
-
-				theSolution = doDepthFirst(grid.copy(), solution.addStep(grid.robot.getCurrentDirection(),
-						grid.robot.getCurrentPostion(), "Moved Forward"), newVisited);
+		} else if (!grid.getVisited().containsAll(neighbors) && theSolution == null) {
+			if (!grid.getVisited().contains(grid.checkForward()) && grid.moveForward()) {
+				grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(),
+						"Moved Forward");
+				theSolution = doDepthFirst(grid.copy());
 			}
 			if (theSolution == null) {
-				theSolution = doDepthFirst(grid.copy().turnLeft(),
-						solution.addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Left"),
-						newVisited);
+				grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Left");
+				theSolution = doDepthFirst(grid.copy().turnLeft());
 			}
 			if (theSolution == null) {
-				theSolution = doDepthFirst(grid.copy().turnRight(),
-						solution.addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Right"),
-						newVisited);
+				grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Right");
+				theSolution = doDepthFirst(grid.copy().turnRight());
 			}
 		}
 		return theSolution;

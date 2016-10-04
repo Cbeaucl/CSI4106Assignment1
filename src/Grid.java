@@ -7,14 +7,19 @@ public class Grid {
 	int gridSize;
 	List<GridPosition> dirtPostions;
 	List<GridPosition> obsticalPostion;
+	Solution solution;
+	List<GridNode> visited;
 	Robot robot;
 
-	public Grid(List<GridPosition> dirtPostions, List<GridPosition> obsticalPostion, Robot robot, int gridSize) {
+	public Grid(List<GridPosition> dirtPostions, List<GridPosition> obsticalPostion, Robot robot, int gridSize,
+			Solution solution, List<GridNode> visited) {
 		this.gridSize = gridSize;
 		this.map = new GridNode[gridSize][gridSize];
 		this.dirtPostions = dirtPostions;
 		this.obsticalPostion = obsticalPostion;
 		this.robot = robot;
+		this.solution = solution;
+		this.visited = visited;
 
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
@@ -58,12 +63,16 @@ public class Grid {
 	}
 
 	public Grid copy() {
+		List<GridNode> newVisited = new ArrayList<GridNode>();
+		for (GridNode newCopy : visited) {
+			newVisited.add(newCopy);
+		}
 		List<GridPosition> newdirtList = new ArrayList<GridPosition>(dirtPostions.size());
 		for (GridPosition position : dirtPostions) {
 			newdirtList.add(position);
 		}
 		Robot newRobot = new Robot(robot.getCurrentPostion(), this.robot.getCurrentDirection(), robot.getSpentEnergy());
-		return new Grid(newdirtList, obsticalPostion, newRobot, gridSize);
+		return new Grid(newdirtList, obsticalPostion, newRobot, gridSize, solution.copy(), newVisited);
 	}
 
 	public boolean moveForward() {
@@ -230,6 +239,22 @@ public class Grid {
 			}
 		}
 		return neighbors;
+	}
+
+	public Solution getSolution() {
+		return solution;
+	}
+
+	public void setSolution(Solution solution) {
+		this.solution = solution;
+	}
+
+	public List<GridNode> getVisited() {
+		return visited;
+	}
+
+	public void setVisited(List<GridNode> visited) {
+		this.visited = visited;
 	}
 
 	public void suck() {
