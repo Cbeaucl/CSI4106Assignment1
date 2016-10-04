@@ -2,12 +2,12 @@
 public class Robot {
 	private GridPosition currentPostion;
 	private String currentDirection;
-	private int spentEnergy = 0;
+	private int spentEnergy;
 
-	public Robot(GridPosition currentPostion, String currentDirection) {
-		super();
+	public Robot(GridPosition currentPostion, String currentDirection, int spentEnergy) {
 		this.currentPostion = currentPostion;
 		this.currentDirection = currentDirection;
+		this.spentEnergy = spentEnergy;
 	}
 
 	public GridPosition getCurrentPostion() {
