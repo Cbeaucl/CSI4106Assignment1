@@ -22,13 +22,13 @@ public class RobotApp {
 		obstacles.add(obst1);
 		obstacles.add(obst2);
 		obstacles.add(obst3);
-		Robot theRobot = new Robot(new GridPosition(3, 2), "w", 0);
+		Robot theRobot = new Robot(new GridPosition(3, 0), "e", 0);
 		// obstacles
 		Grid grid = generateGrid(dirts, obstacles, theRobot, 4);
 		grid.printGrid();
 		// grid.moveForward();
 		// grid.printGrid();
-		search(grid, 1);
+		search(grid, 3);
 
 	}
 

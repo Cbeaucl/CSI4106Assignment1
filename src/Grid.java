@@ -62,6 +62,20 @@ public class Grid {
 		return map[postion.getY()][postion.getX()];
 	}
 
+	public int getDistanceFromDirt(GridNode node) {
+		int minDistance = Integer.MAX_VALUE;
+		GridPosition nodePosition = node.getPosition();
+		for (GridPosition postion : dirtPostions) {
+			int xDistance = nodePosition.getX() - postion.getX();
+			int yDisstance = nodePosition.getY() - postion.getY();
+			int distance = Math.abs(xDistance) + Math.abs(yDisstance);
+			if (minDistance > distance) {
+				minDistance = distance;
+			}
+		}
+		return minDistance;
+	}
+
 	public Grid copy() {
 		List<GridNode> newVisited = new ArrayList<GridNode>();
 		for (GridNode newCopy : visited) {
@@ -71,7 +85,8 @@ public class Grid {
 		for (GridPosition position : dirtPostions) {
 			newdirtList.add(position);
 		}
-		Robot newRobot = new Robot(robot.getCurrentPostion(), this.robot.getCurrentDirection(), robot.getSpentEnergy());
+		Robot newRobot = new Robot(new GridPosition(robot.getCurrentPostion().getX(), robot.getCurrentPostion().getY()),
+				this.robot.getCurrentDirection(), robot.getSpentEnergy());
 		return new Grid(newdirtList, obsticalPostion, newRobot, gridSize, solution.copy(), newVisited);
 	}
 
