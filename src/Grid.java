@@ -2,6 +2,30 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Chris B
+ *
+ */
+/**
+ * @author Chris B
+ *
+ */
+/**
+ * @author Chris B
+ *
+ */
+/**
+ * @author Chris B
+ *
+ */
+/**
+ * @author Chris B
+ *
+ */
+/**
+ * @author Chris B
+ *
+ */
 public class Grid {
 	GridNode[][] map;
 	int gridSize;
@@ -11,57 +35,85 @@ public class Grid {
 	List<GridNode> visited;
 	Robot robot;
 
-	public Grid(List<GridPosition> dirtPostions, List<GridPosition> obsticalPostion, Robot robot, int gridSize,
+	/**
+	 * Constructor for grid new grid. The grid object also serves as a means of
+	 * maintaing state. As such, it also maintains a list of visited nodes, as
+	 * well as a soltuion.
+	 * 
+	 * @param dirtPostions
+	 *            The X Y coordinates of the dirts in the grid.
+	 * @param obstaclePostion
+	 *            The X Y coordinates of the obstacles in the grid.
+	 * @param robot
+	 *            The {@link #robot} associated with the grid.
+	 * @param gridSize
+	 *            The size of the grid. Grid will be square n by n.
+	 * @param solution
+	 *            The solution that goes along with the grid.
+	 * @param visited
+	 *            The #GridNode objects that indicate the nodes that have been
+	 *            visited so far in this state.
+	 */
+	public Grid(List<GridPosition> dirtPostions, List<GridPosition> obstaclePostion, Robot robot, int gridSize,
 			Solution solution, List<GridNode> visited) {
 		this.gridSize = gridSize;
 		this.map = new GridNode[gridSize][gridSize];
 		this.dirtPostions = dirtPostions;
-		this.obsticalPostion = obsticalPostion;
+		this.obsticalPostion = obstaclePostion;
 		this.robot = robot;
 		this.solution = solution;
 		this.visited = visited;
-
+		// Constructing the n by n grid using a loop.
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
 				GridPosition position = new GridPosition(j, i);
 				map[i][j] = new GridNode(false, false, false, position);
 			}
 		}
-
+		// Placing the obstacles and the dirts in the grids.
 		for (GridPosition position : dirtPostions) {
 			map[position.getY()][position.getX()].setHasDirt(true);
 		}
-		for (GridPosition position : obsticalPostion) {
+		for (GridPosition position : obstaclePostion) {
 			map[position.getY()][position.getX()].setHasObstacle(true);
 		}
+		// Setting the robot position in the grid, useful for printing the grid.
 		GridPosition roboPosition = robot.getCurrentPostion();
 		map[roboPosition.getY()][roboPosition.getX()].setHasRobot(true);
 	}
 
-	public void moveRobotTo(GridPosition position) {
-		GridPosition oldPosition = robot.getCurrentPostion();
-		robot.setCurrentPostion(position);
-		map[oldPosition.getY()][oldPosition.getX()].setHasRobot(false);
-		map[position.getY()][position.getX()].setHasRobot(true);
-	}
-
+	// Helper mehtod that verifies if the grid is clean.
 	public boolean isClean() {
-		boolean clean = true;
-		for (int i = 0; i < gridSize; i++) {
-			for (int j = 0; j < gridSize; j++) {
-				if (map[i][j].isHasDirt()) {
-					clean = false;
-					break;
-				}
-			}
+		if (dirtPostions.size() == 0) {
+			return true;
 		}
-		return clean;
+		return false;
+		/*
+		 * boolean clean = true; for (int i = 0; i < gridSize; i++) { for (int j
+		 * = 0; j < gridSize; j++) { if (map[i][j].isHasDirt()) { clean = false;
+		 * break; } } } return clean;
+		 */
 	}
 
+	/**
+	 * Returns the #GridNode from the grid.
+	 * 
+	 * @param postion
+	 *            The coordinates of the node.
+	 * @return
+	 */
 	public GridNode getNodeFromPostion(GridPosition postion) {
 		return map[postion.getY()][postion.getX()];
 	}
 
+	/**
+	 * Takes in a #GridNode and determines the number of cells between the node
+	 * and the closest dirt on the grid.
+	 * 
+	 * @param node
+	 *            The node to get the distance from.
+	 * @return
+	 */
 	public int getDistanceFromDirt(GridNode node) {
 		int minDistance = Integer.MAX_VALUE;
 		GridPosition nodePosition = node.getPosition();
@@ -76,6 +128,13 @@ public class Grid {
 		return minDistance;
 	}
 
+	/**
+	 * Method that creates a hard copy of the grid and it's objects. This is
+	 * necessary to be able to keep track of the states as we move through
+	 * algos.
+	 * 
+	 * @return
+	 */
 	public Grid copy() {
 		List<GridNode> newVisited = new ArrayList<GridNode>();
 		for (GridNode newCopy : visited) {
@@ -90,6 +149,11 @@ public class Grid {
 		return new Grid(newdirtList, obsticalPostion, newRobot, gridSize, solution.copy(), newVisited);
 	}
 
+	/**
+	 * Move the robot forward if possible, otherwise return false.
+	 * 
+	 * @return
+	 */
 	public boolean moveForward() {
 		GridPosition position = robot.getCurrentPostion();
 		boolean moved = false;
@@ -145,6 +209,11 @@ public class Grid {
 		return moved;
 	}
 
+	/**
+	 * Check and see if it is possible for the robot to move forward.
+	 * 
+	 * @return
+	 */
 	public GridNode checkForward() {
 		GridPosition position = robot.getCurrentPostion();
 		boolean moved = false;
@@ -229,6 +298,14 @@ public class Grid {
 		return this;
 	}
 
+	/**
+	 * Returns a list of neighboring nodes for which it is possible to move to
+	 * from the given node.
+	 * 
+	 * @param position
+	 *            The position in the grid to check.
+	 * @return
+	 */
 	public List<GridNode> getNeighbors(GridPosition position) {
 		List<GridNode> neighbors = new LinkedList<GridNode>();
 		if (position.getX() - 1 >= 0) {
@@ -272,6 +349,9 @@ public class Grid {
 		this.visited = visited;
 	}
 
+	/**
+	 * Commands the robot to suck the current tile it finds itself on.
+	 */
 	public void suck() {
 		GridPosition currentPosition = robot.getCurrentPostion();
 		dirtPostions.remove(currentPosition);
@@ -281,6 +361,9 @@ public class Grid {
 		robot.useEnergy(10);
 	}
 
+	/**
+	 * Print out the grid.
+	 */
 	public void printGrid() {
 		for (int i = 0; i < gridSize; i++) {
 			for (int j = 0; j < gridSize; j++) {
