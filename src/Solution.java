@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Solution {
 	private List<RobotStep> solutionSteps;
+	private int totalEnergy;
 
 	public Solution() {
 		solutionSteps = new LinkedList<RobotStep>();
@@ -37,5 +38,15 @@ public class Solution {
 		for (RobotStep step : solutionSteps) {
 			System.out.println(step.toString());
 		}
+		System.out.println("Robot spent: " + getTotalEnergy());
+		System.out.println("Total Moves: " + getSolutionSteps().size());
+	}
+
+	public int getTotalEnergy() {
+		return totalEnergy;
+	}
+
+	public void setTotalEnergy(int totalEnergy) {
+		this.totalEnergy = totalEnergy;
 	}
 }

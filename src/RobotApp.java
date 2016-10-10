@@ -22,13 +22,14 @@ public class RobotApp {
 		obstacles.add(obst1);
 		obstacles.add(obst2);
 		obstacles.add(obst3);
-		Robot theRobot = new Robot(new GridPosition(3, 0), "e", 0);
+		Robot theRobot = new Robot(new GridPosition(3, 2), "w", 0);
 		// obstacles
 		Grid grid = generateGrid(dirts, obstacles, theRobot, 4);
 		grid.printGrid();
 		// grid.moveForward();
 		// grid.printGrid();
-		search(grid, 3);
+		Solution solution = search(grid, 3);
+		printSolution(solution);
 
 	}
 
@@ -41,20 +42,19 @@ public class RobotApp {
 	private static Solution search(Grid grid, int searchType) {
 		switch (searchType) {
 		case 1:
-			RobotSearchAlgs.doDepthFirst(grid);
-			break;
+			return RobotSearchAlgs.doDepthFirst(grid);
 		case 2:
-			RobotSearchAlgs.doBreadthFirst(grid);
-			break;
+			return RobotSearchAlgs.doBreadthFirst(grid);
 		case 3:
-			RobotSearchAlgs.doAStar(grid);
+			return RobotSearchAlgs.doAStar(grid);
 		default:
 			break;
 		}
 		return null;
 	}
 
-	private void printSolution(Solution solution) {
+	private static void printSolution(Solution solution) {
+		solution.printSolution();
 
 	}
 

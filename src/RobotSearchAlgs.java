@@ -6,7 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class RobotSearchAlgs {
 
-	public static void doBreadthFirst(Grid grid) {
+	public static Solution doBreadthFirst(Grid grid) {
+		return null;
 	}
 
 	public static Solution doDepthFirst(Grid grid) {
@@ -15,28 +16,32 @@ public class RobotSearchAlgs {
 		GridNode node = grid.getNodeFromPostion(position);
 		grid.getVisited().add(node);
 		Solution theSolution = null;
-
+		// Get the neighbors of the robots current position.
 		List<GridNode> neighbors = grid.getNeighbors(position);
+		// Check to see if current position has dirt. If so, suck it.
 		if (node.isHasDirt()) {
 			grid.suck();
 			grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Sucked");
 		}
+		// Check to see if the grid is clean. If so, we're done, return
+		// solution.
 		if (grid.isClean()) {
-			grid.getSolution().printSolution();
-			System.out.println("Robot spent: " + grid.robot.getSpentEnergy());
-			System.out.println("Total Moves: " + grid.getSolution().getSolutionSteps().size());
+			grid.getSolution().setTotalEnergy(grid.robot.getSpentEnergy());
 			theSolution = grid.getSolution();
-
+			// If not, check and see if it is still posible to move.
 		} else if (!grid.getVisited().containsAll(neighbors) && theSolution == null) {
 			if (!grid.getVisited().contains(grid.checkForward()) && grid.moveForward()) {
+				// If we can move forward, do so, and recurse.
 				grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(),
 						"Moved Forward");
 				theSolution = doDepthFirst(grid.copy());
 			}
+			// If a solution isn't found, turn Left and recurse.
 			if (theSolution == null) {
 				grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Left");
 				theSolution = doDepthFirst(grid.copy().turnLeft());
 			}
+			// If a solution isn't found, turn right and recurse.
 			if (theSolution == null) {
 				grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Right");
 				theSolution = doDepthFirst(grid.copy().turnRight());
@@ -46,6 +51,15 @@ public class RobotSearchAlgs {
 
 	}
 
+	/**
+	 * Uses a heuristic to help make decision as to where the robot should go,
+	 * based on how the next move will increase it's distance from the goal. We
+	 * decided to add a cost of 21 per cell between the neighboring cell and the
+	 * closest piece of dirt.
+	 * 
+	 * @param grid
+	 * @return
+	 */
 	public static Solution doAStar(Grid grid) {
 		grid.printGrid();
 		GridPosition position = grid.robot.getCurrentPostion();
@@ -54,25 +68,27 @@ public class RobotSearchAlgs {
 		Solution theSolution = null;
 
 		List<GridNode> neighbors = grid.getNeighbors(position);
+		// If the current node has dirt, suck the dirt.
 		if (node.isHasDirt()) {
 			grid.suck();
 			grid.getSolution().addStep(grid.robot.getCurrentDirection(), grid.robot.getCurrentPostion(), "Sucked");
 		}
+		// If it's clean, were done, return the solution.
 		if (grid.isClean()) {
-			grid.getSolution().printSolution();
-			System.out.println("Robot spent: " + grid.robot.getSpentEnergy());
-			System.out.println("Total Moves: " + grid.getSolution().getSolutionSteps().size());
+			grid.getSolution().setTotalEnergy(grid.robot.getSpentEnergy());
 			theSolution = grid.getSolution();
 
 		} else if (!grid.getVisited().containsAll(neighbors) && theSolution == null) {
-
+			// Calculate the cost to reach each possible non visited node.
 			Map<GridNode, Integer> costMap = calculateCost(neighbors, grid.robot);
-
+			// Using the heuristic, add an extra cost from the goal for each of
+			// the neighbors.
 			for (Map.Entry<GridNode, Integer> entry : costMap.entrySet()) {
 				GridNode key = entry.getKey();
 				int additionalCost = grid.getDistanceFromDirt(key);
 				entry.setValue(entry.getValue() + (additionalCost * 21));// ...
 			}
+			// Sort the nodes based on the cheapest cost and queue them.
 			Queue<GridNode> test = new LinkedBlockingQueue<GridNode>();
 			while (!costMap.isEmpty()) {
 				int minCost = Integer.MAX_VALUE;
@@ -86,11 +102,15 @@ public class RobotSearchAlgs {
 				costMap.remove(cheapNode);
 				test.add(cheapNode);
 			}
+			// Recurse through the list.
 			for (GridNode nodeTest : test) {
 				if (theSolution != null) {
 					break;
 				}
+				// Determine which action to take based to get to the cheapest
+				// node based on the cost calculations.
 				String move = actionToTake(grid.robot, nodeTest);
+				// Take action, recurse.
 				switch (move) {
 				case "f":
 					grid.moveForward();
@@ -120,6 +140,16 @@ public class RobotSearchAlgs {
 
 	}
 
+	/**
+	 * Determine which action to take to move the desired node. Returns null if
+	 * it is impossible to move to that node.
+	 * 
+	 * @param robot
+	 *            The robot object from the grid.
+	 * @param node
+	 *            The node we want to move towards.
+	 * @return
+	 */
 	private static String actionToTake(Robot robot, GridNode node) {
 		int xDif = robot.getCurrentPostion().getX() - node.getPosition().getX();
 		int yDif = robot.getCurrentPostion().getY() - node.getPosition().getY();
