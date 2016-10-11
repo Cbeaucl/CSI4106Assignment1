@@ -6,8 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class RobotSearchAlgs {
 
-	public static Solution doBreadthFirst(Grid grid) {
-		return null;
+	public static void doBreadthFirst(Grid grid) {
 	}
 
 	public static Solution doDepthFirst(Grid grid) {

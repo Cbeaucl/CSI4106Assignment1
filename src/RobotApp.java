@@ -28,7 +28,7 @@ public class RobotApp {
 		grid.printGrid();
 		// grid.moveForward();
 		// grid.printGrid();
-		Solution solution = search(grid, 3);
+		Solution solution = search(grid, 1);
 		printSolution(solution);
 
 	}
