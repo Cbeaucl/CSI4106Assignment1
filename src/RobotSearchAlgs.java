@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -6,7 +7,61 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class RobotSearchAlgs {
 
-	public static void doBreadthFirst(Grid grid) {
+	public static Solution doBreadthFirst(Grid grid) {
+		grid.printGrid();
+		GridPosition position = grid.robot.getCurrentPostion();
+		GridNode node = grid.getNodeFromPostion(position);
+		grid.getVisited().add(node);
+		Solution theSolution = null;
+
+		Queue<Grid> frontier = new LinkedList<Grid>();
+		Grid tempGrid = null;
+		frontier.add(grid.copy());
+
+		while (!frontier.isEmpty()) {
+			Grid currentGrid = frontier.poll();
+			currentGrid.printGrid();
+			List<GridNode> neighbors = currentGrid.getNeighbors(position);
+			if (currentGrid.getNodeFromPostion(currentGrid.robot.getCurrentPostion()).isHasDirt()) {
+				currentGrid.suck();
+				currentGrid.getSolution().addStep(currentGrid.robot.getCurrentDirection(),
+						currentGrid.robot.getCurrentPostion(), "Sucked");
+			}
+			if (currentGrid.isClean()) {
+				currentGrid.getSolution().printSolution();
+				System.out.println("Robot spent: " + currentGrid.robot.getSpentEnergy());
+				System.out.println("Total Moves: " + currentGrid.getSolution().getSolutionSteps().size());
+				theSolution = currentGrid.getSolution();
+				return theSolution;
+
+			} else if (!currentGrid.getVisited().containsAll(neighbors) && theSolution == null) {
+				if (!currentGrid.getVisited().contains(currentGrid.checkForward())) {
+					tempGrid = currentGrid.copy();
+					if (tempGrid.moveForward()) {
+						tempGrid.getSolution().addStep(tempGrid.robot.getCurrentDirection(),
+								tempGrid.robot.getCurrentPostion(), "Moved Forward");
+						tempGrid.getVisited().add(tempGrid.getNodeFromPostion(tempGrid.robot.getCurrentPostion()));
+						frontier.add(tempGrid);
+					}
+
+				}
+				if (theSolution == null) {
+					tempGrid = currentGrid.copy();
+					tempGrid.getSolution().addStep(tempGrid.robot.getCurrentDirection(),
+							tempGrid.robot.getCurrentPostion(), "Left");
+					tempGrid.turnLeft();
+					frontier.add(tempGrid);
+				}
+				if (theSolution == null) {
+					tempGrid = currentGrid.copy();
+					tempGrid.getSolution().addStep(currentGrid.robot.getCurrentDirection(),
+							tempGrid.robot.getCurrentPostion(), "Right");
+					tempGrid.turnRight();
+					frontier.add(tempGrid);
+				}
+			}
+		}
+		return theSolution;
 	}
 
 	public static Solution doDepthFirst(Grid grid) {
